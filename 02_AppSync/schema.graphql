@@ -1,0 +1,28 @@
+# GraphQL型定義
+
+# Book型
+type Book {
+  # 両フィールドともにString!型の非null値
+  title: String!
+  author: String!
+}
+
+# CreateBookInput入力型
+input CreateBookInput {
+  title: String!
+  author: String!
+}
+
+# クエリ型
+type Query {
+  # getBooksクエリ
+  # Book型の配列を返す
+  getBooks: [Book]
+}
+
+# ミューテーション型
+type Mutation {
+  # createBookミューテーション
+  # CreateBookInput型のinput引数を受け取り、新しく生成されたBookを返す
+  createBook(input: CreateBookInput!): Book
+}
