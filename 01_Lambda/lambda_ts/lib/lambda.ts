@@ -1,3 +1,3 @@
 export const handler = async () => {
-  console.log("Hello world!");
+  console.log("ENV_VALUE: " + process.env.ENV_VALUE);
 };
