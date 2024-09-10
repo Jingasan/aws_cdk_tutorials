@@ -74,18 +74,52 @@ export class CognitoStack extends cdk.Stack {
       supportedIdentityProviders: [
         cognito.UserPoolClientIdentityProvider.COGNITO,
       ],
-      // OAuthの設定
+      // OAuthの設定(ユーザー／パスワード認証する分には設定不要)
       oAuth: {
         // OAuth2.0で利用する認可フロー
         flows: {
-          authorizationCodeGrant: true, // 認証コード付与
-          clientCredentials: true,
-          implicitCodeGrant: true, // 暗黙的な付与
+          // 認可コードグラント
+          // [フロー]
+          // 1. クライアントアプリがユーザーを認証するため、Cognitoの認可サーバーにリダイレクトする。
+          // 2. ユーザーが認証を行い、認可サーバーがクライアントアプリケーションに「認可コード」を返す。
+          // 3. クライアントアプリケーションが認可コードを使用してCognitoにアクセストークンをリクエストし、
+          // 最終的にアクセストークンが発行される。
+          // [特徴]
+          // ユーザーが介在するフローであり、セキュアである。
+          // アクセストークンが直接ブラウザに返されないため、ブラウザ経由の攻撃リスクが少ない。
+          // 主にサーバーサイドアプリケーションやWebアプリケーションで使われる。
+          authorizationCodeGrant: true,
+          // クライアント認証グラント
+          // [フロー]
+          // クライアントアプリケーション（サーバーなど）が直接Cognitoに対し、
+          // クライアントIDとクライアントシークレットを送信して認証を行い、アクセストークンを取得する。
+          // [特徴]
+          // ユーザー認証は行わず、クライアント（アプリケーション）が認証される。
+          // システム間通信やマイクロサービス間の認証に適している。
+          // クライアントのみがリソースにアクセスするため、アクセストークンはユーザーに関連付けられていない。
+          clientCredentials: false,
+          // インプリシットグラント
+          // [フロー]
+          // 1. クライアントアプリケーションがユーザーを認証するため、Cognitoの認可サーバーにリダイレクトする。
+          // 2. 認証後、アクセストークンが直接ユーザーのブラウザに返される（認可コードを経由せず）。
+          // [特徴]
+          // 認可コードを使わないため、よりシンプルで直接的ですが、セキュリティ面で弱点がある。
+          // ブラウザやクライアントサイドで使用されるため、アクセストークンがURLなどに露出する可能性がある。
+          // セキュリティ強化版の「authorization code grant with PKCE(Proof Key for Code Exchange)」が
+          // 推奨されることが多く、implicit grantは推奨されなくなっている。
+          implicitCodeGrant: false,
         },
         // 許可するサインイン後のリダイレクト先URL群
-        callbackUrls: [],
+        callbackUrls: ["https://example.com/app"],
         // 許可するサインアウト後のリダイレクト先URL群
-        logoutUrls: [],
+        logoutUrls: ["https://example.com/app"],
+        // カスタムスコープ
+        scopes: [
+          cognito.OAuthScope.EMAIL,
+          cognito.OAuthScope.OPENID,
+          cognito.OAuthScope.PHONE,
+          cognito.OAuthScope.PROFILE,
+        ],
       },
       authFlows: {
         // 管理ユーザーによるユーザー名とパスワードでの認証(サーバーサイドで利用)
