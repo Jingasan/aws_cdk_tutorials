@@ -14,7 +14,9 @@ export class LambdaTsStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    // LogGroupの作成
+    /**
+     * Lambda用LogGroupの作成
+     */
     const logGroup = new Logs.LogGroup(this, "MyLambdaLogGroup", {
       // ロググループ名
       logGroupName: `/aws/lambda/${name}`,
