@@ -13,7 +13,7 @@ export class CognitoStack extends cdk.Stack {
     /**
      * Cognitoユーザープールの作成
      */
-    const userPool = new cognito.UserPool(this, "Sample-users-pool", {
+    const userPool = new cognito.UserPool(this, "UserPool", {
       // ユーザープール名
       userPoolName: name,
       // ユーザーが自身でサインアップできるようにするかどうか(Default: false)
@@ -68,10 +68,10 @@ export class CognitoStack extends cdk.Stack {
     });
 
     /**
-     * ユーザープールクライアントの追加
+     * アプリケーションクライアントの追加
      */
-    userPool.addClient("Application", {
-      // ユーザープールクライアント名
+    userPool.addClient("UserPoolClient", {
+      // アプリケーションクライアント名
       userPoolClientName: name,
       // シークレットを作成するか false(default):作成しない
       generateSecret: false,
