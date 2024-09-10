@@ -2,6 +2,7 @@ import * as cdk from "aws-cdk-lib";
 import { Construct } from "constructs";
 import * as cognito from "aws-cdk-lib/aws-cognito";
 import { randomUUID } from "crypto";
+import * as fs from "fs";
 
 // CDKで作成する各リソース名のPrefix
 const name = "cognito-cdk-" + randomUUID();
@@ -31,8 +32,8 @@ export class CognitoStack extends cdk.Stack {
       signInAliases: { email: true },
       // 属性の追加
       standardAttributes: {
-        givenName: { required: true },
-        familyName: { required: true },
+        givenName: { required: false },
+        familyName: { required: false },
       },
       // カスタム属性の追加
       customAttributes: {
@@ -49,7 +50,7 @@ export class CognitoStack extends cdk.Stack {
       },
       // パスワードポリシーの設定
       passwordPolicy: {
-        minLength: 10, // 最小文字数
+        minLength: 8, // 最小文字数
         requireLowercase: false, // 小文字を必須とするか
         requireUppercase: false, // 大文字を必須とするか
         requireDigits: false, // 数字を必須とするか
@@ -70,7 +71,7 @@ export class CognitoStack extends cdk.Stack {
     /**
      * アプリケーションクライアントの追加
      */
-    userPool.addClient("ApplicationClient", {
+    const userPoolClient = userPool.addClient("ApplicationClient", {
       // アプリケーションクライアント名
       userPoolClientName: name,
       // シークレットを作成するか false(default):作成しない
@@ -149,6 +150,18 @@ export class CognitoStack extends cdk.Stack {
       // リフレッシュトークンの有効期限
       // 60分-10年の範囲で指定, IDトークン/アクセストークンよりも長い時間を指定すること
       refreshTokenValidity: cdk.Duration.seconds(3600),
+    });
+
+    // ユーザープールIDの出力
+    new cdk.CfnOutput(this, "OutputUserPoolID", {
+      value: userPool.userPoolId,
+      description: "User Pool ID",
+    });
+
+    // アプリケーションクライアントIDの出力
+    new cdk.CfnOutput(this, "OutputApplicationClientID", {
+      value: userPoolClient.userPoolClientId,
+      description: "Application Client ID",
     });
   }
 }
