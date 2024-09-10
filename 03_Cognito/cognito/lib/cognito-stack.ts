@@ -83,6 +83,8 @@ export class CognitoStack extends cdk.Stack {
       supportedIdentityProviders: [
         cognito.UserPoolClientIdentityProvider.COGNITO,
       ],
+      // OAuth認証を無効化するかどうか(default: false)
+      disableOAuth: false,
       // OAuthの設定(ユーザー／パスワード認証する分には設定不要)
       oAuth: {
         // OAuth2.0で利用する認可フロー
