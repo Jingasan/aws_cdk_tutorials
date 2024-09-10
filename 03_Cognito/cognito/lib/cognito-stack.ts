@@ -70,7 +70,7 @@ export class CognitoStack extends cdk.Stack {
     /**
      * アプリケーションクライアントの追加
      */
-    userPool.addClient("UserPoolClient", {
+    userPool.addClient("ApplicationClient", {
       // アプリケーションクライアント名
       userPoolClientName: name,
       // シークレットを作成するか false(default):作成しない
