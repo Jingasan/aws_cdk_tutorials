@@ -4,7 +4,7 @@ import * as cognito from "aws-cdk-lib/aws-cognito";
 import { randomUUID } from "crypto";
 
 // CDKで作成する各リソース名のPrefix
-const name = "cognito-cdk" + randomUUID();
+const name = "cognito-cdk-" + randomUUID();
 
 export class CognitoStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -16,8 +16,17 @@ export class CognitoStack extends cdk.Stack {
     const userPool = new cognito.UserPool(this, "Sample-users-pool", {
       // ユーザープール名
       userPoolName: name,
-      // セルフサインアップを有効にするかどうか(Default: false)
+      // ユーザーが自身でサインアップできるようにするかどうか(Default: false)
       selfSignUpEnabled: true,
+      // サインアップ後のユーザー確認方法
+      userVerification: {
+        // コードによる検証
+        emailStyle: cognito.VerificationEmailStyle.CODE,
+        // 検証メッセージ
+        emailSubject: "Verify email message",
+        emailBody: "Thanks for signing up! Your verification code is {####}",
+        smsMessage: "Thanks for signing up! Your verification code is {####}",
+      },
       // ユーザー名の他に認証での利用を許可する属性(username/email/phone/preferredUsername)
       signInAliases: { email: true },
       // 属性の追加
