@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { Auth } from "aws-amplify";
 import { CognitoUser } from "amazon-cognito-identity-js";
 import { getErrorName, getErrorMessage } from "./ErrorMessage";
-import * as API from "./api";
+import * as API from "./API";
 
 /**
  * ユーザーページ
@@ -132,6 +132,10 @@ export default function UserPage(props: Props) {
       });
   };
 
+  /**
+   * API GatewayのCognitoオーソライザー付きAPIの呼び出し
+   * @returns
+   */
   const callAPI = async () => {
     const idToken = loginUser
       .getSignInUserSession()

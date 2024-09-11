@@ -61,7 +61,7 @@ export const getErrorMessage = (message: string): string | undefined => {
       return "検証コードが不正です。";
     case "Invalid code provided, please request a code again.":
       return "検証コードが期限切れです。検証コードを再度発行してください。";
-    // Signin系
+    // SignIn系
     case "User does not exist.":
       return "メールアドレスが存在しません。";
     case "Attempt limit exceeded, please try after some time.":
