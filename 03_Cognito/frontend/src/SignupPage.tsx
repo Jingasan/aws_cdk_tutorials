@@ -7,7 +7,7 @@ import { getErrorName, getErrorMessage } from "./ErrorMessage";
 /**
  * サインアップページ
  */
-export default function SignupPage() {
+export default function SignUpPage() {
   // ページ移動
   const navigate = useNavigate();
   // 入力フォーム
@@ -31,11 +31,11 @@ export default function SignupPage() {
    * サインアップ処理
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleSignup = (data: any) => {
+  const handleSignUp = (data: any) => {
     const username = data.username;
     const email = data.email;
     const password = data.password;
-    Auth.signUp({
+    Auth.SignUp({
       username: email,
       password: password,
       attributes: {
@@ -72,7 +72,7 @@ export default function SignupPage() {
         ユーザー名／メールアドレス／パスワードを入力し、新規登録ボタンを押下してください。
       </div>
       <div>入力したメールアドレス宛てに検証コードが届きます。</div>
-      <form onSubmit={handleSubmit(handleSignup)}>
+      <form onSubmit={handleSubmit(handleSignUp)}>
         <input
           type="text"
           placeholder="Username"

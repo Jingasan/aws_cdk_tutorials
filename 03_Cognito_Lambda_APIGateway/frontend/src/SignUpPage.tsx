@@ -1,18 +1,15 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { Auth } from "aws-amplify";
-import { CognitoUser } from "amazon-cognito-identity-js";
 import { getErrorName, getErrorMessage } from "./ErrorMessage";
 
 /**
- * ログインページ
+ * サインアップページ
  */
-export interface Props {
-  setLoginUser: (loginUser: CognitoUser | undefined) => void;
-}
-export default function LoginPage(props: Props) {
-  const { setLoginUser } = props;
+export default function SignUpPage() {
+  // ページ移動
+  const navigate = useNavigate();
   // 入力フォーム
   const { register, handleSubmit } = useForm();
   // 表示メッセージ
@@ -21,31 +18,40 @@ export default function LoginPage(props: Props) {
   );
 
   /**
-   * 画面の初期化
+   * 画面の初期化：ログイン状態をチェック
    */
   React.useEffect(() => {
-    // 表示メッセージを削除
+    // 表示メッセージを非表示にする
     setDisplayMessage(<div></div>);
     // アンマウント時の処理
     return () => {};
   }, []);
 
   /**
-   * ログイン処理
+   * サインアップ処理
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleLogin = (data: any) => {
+  const handleSignUp = (data: any) => {
+    const username = data.username;
     const email = data.email;
     const password = data.password;
-    Auth.signIn(email, password)
-      .then((user) => {
-        // 表示メッセージを削除
+    Auth.signUp({
+      username: email,
+      password: password,
+      attributes: {
+        preferred_username: username,
+        name: username,
+        email: email,
+      },
+    })
+      .then((res) => {
+        // 表示メッセージを非表示にする
         setDisplayMessage(<div></div>);
-        // 現在のログインユーザーを更新
-        setLoginUser(user);
-        console.debug(user);
+        // 検証コード入力ページへ移動
+        navigate("/Confirm");
+        console.debug(res);
       })
-      .catch((err) => {
+      .catch((err: Error) => {
         // エラーメッセージの表示
         setDisplayMessage(
           <div style={{ color: "red" }}>
@@ -56,18 +62,25 @@ export default function LoginPage(props: Props) {
         );
         console.error(err.name);
         console.error(err.message);
-        // 現在のログインユーザーを更新
-        setLoginUser(undefined);
       });
   };
 
   return (
     <div style={{ margin: "30px" }} className="App">
-      <h1>ログイン画面</h1>
+      <h1>サインアップ画面</h1>
       <div>
-        登録メールアドレス／パスワードを入力し、ログインボタンを押下してください。
+        ユーザー名／メールアドレス／パスワードを入力し、新規登録ボタンを押下してください。
       </div>
-      <form onSubmit={handleSubmit(handleLogin)}>
+      <div>入力したメールアドレス宛てに検証コードが届きます。</div>
+      <form onSubmit={handleSubmit(handleSignUp)}>
+        <input
+          type="text"
+          placeholder="Username"
+          size={50}
+          required
+          {...register("username")}
+        />
+        <br />
         <input
           type="email"
           placeholder="email@domain"
@@ -84,12 +97,10 @@ export default function LoginPage(props: Props) {
           {...register("password")}
         />
         <br />
-        <button type="submit">ログイン</button>
+        <button type="submit">新規登録</button>
       </form>
       <br />
-      <Link to="/SignUp">新規登録</Link>
-      <br />
-      <Link to="/PasswordReset">パスワードを忘れた場合</Link>
+      <Link to="/">ログイン</Link>
       <br />
       <br />
       {displayMessage}
