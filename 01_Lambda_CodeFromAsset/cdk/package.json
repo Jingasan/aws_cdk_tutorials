@@ -1,0 +1,32 @@
+{
+  "name": "cdk",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "module": "dist/index.js",
+  "scripts": {
+    "build": "node build.mjs",
+    "bootstrap": "npm run build && npx cdk bootstrap",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "deploy": "npm run build && npx cdk deploy --all --require-approval never",
+    "destroy": "npm run build && npx cdk destroy --all --force"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.33.0",
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "aws-cdk": "^2.1118.0",
+    "esbuild": "^0.25.12",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.248.0",
+    "constructs": "^10.6.0",
+    "hono": "^4.7.0"
+  }
+}
